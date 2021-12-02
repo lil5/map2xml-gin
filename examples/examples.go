@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/yoda-of-soda/map2xml"
+	"github.com/gin-gonic/gin"
+	"github.com/lil5/map2xml"
 )
 
 func main() {
-	inputMap := map[string]interface{}{
+	inputMap := gin.H{
 		"first_name": "No",
 		"last_name":  "Name",
 		"age":        42,

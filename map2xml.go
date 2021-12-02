@@ -5,6 +5,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"reflect"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Indentation struct {
@@ -31,7 +33,7 @@ type xmlMapEntry struct {
 }
 
 //Initializes the builder. Required to do anything with this library
-func New(input map[string]interface{}) *StructMap {
+func New(input gin.H) *StructMap {
 	return &StructMap{Map: input}
 }
 
@@ -67,7 +69,7 @@ func (smap *StructMap) Print() *StructMap {
 	if root = smap.Root; root != nil {
 		root = map[string]interface{}{"name": *&smap.Root.Name.Local, "attributes": smap.Root.Attributes}
 	}
-	b, _ := json.MarshalIndent(map[string]interface{}{"root": root, "cdata": smap.CData, "indent": indent}, " ", "  ")
+	b, _ := json.MarshalIndent(gin.H{"root": root, "cdata": smap.CData, "indent": indent}, " ", "  ")
 	fmt.Println(string(b))
 	return smap
 }
@@ -115,17 +117,17 @@ func handleChildren(e *xml.Encoder, fieldName string, v interface{}, cdata bool)
 		return e.Encode(xmlMapEntry{XMLName: xml.Name{Local: fieldName}, Value: ""})
 	} else if reflect.TypeOf(v).Kind() == reflect.Map {
 		e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}})
-		for key, val := range v.(map[string]interface{}) {
+		for key, val := range v.(gin.H) {
 			handleChildren(e, key, val, cdata)
 		}
 		return e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}})
 	} else if reflect.TypeOf(v).Kind() == reflect.Slice {
 		e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}})
 		childName := fieldName + "_child"
-		if _, hasChildName := v.([]map[string]interface{})[0]["xml_child_name"]; hasChildName {
-			childName = v.([]map[string]interface{})[0]["xml_child_name"].(string)
+		if _, hasChildName := v.([]gin.H)[0]["xml_child_name"]; hasChildName {
+			childName = v.([]gin.H)[0]["xml_child_name"].(string)
 		}
-		for _, elem := range v.([]map[string]interface{}) {
+		for _, elem := range v.([]gin.H) {
 			handleChildren(e, childName, elem, cdata)
 		}
 		return e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}})
