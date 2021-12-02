@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lil5/map2xml"
+	map2xml "github.com/lil5/map2xml-gin"
 )
 
 func main() {

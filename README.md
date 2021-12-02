@@ -1,22 +1,28 @@
 # map2xml
-Golang map2xml is a wrapper around encoding/xml to enable it to marshal interface maps.
+Golang map2xml-gin is a wrapper around encoding/xml to enable it to marshal interface maps.
 
 It is based upon a builder pattern to enable developers to execute simple instructions without having to consider features they don't want to use.
 
 ## Installation
+```golang
+go get github.com/lil5/map2xml
 ```
-go get github.com/yoda-of-soda/map2xml
-```
+
 ## How to use it
-You start with the ```map2xml.New()``` function and insert a ```map[string]interface{}```, e.g. 
+You start with the ```map2xml.New()``` function and insert a ```gin.H```, e.g. 
 
 ```golang
-inputMap := map[string]interface{}{
+import (
+	"github.com/gin-gonic/gin"
+	map2xml "github.com/lil5/map2xml-gin"
+)
+
+inputMap := gin.H{}{
                 "first_name": "No",
                 "last_name":  "Name",
                 "age":        42,
                 "got_a_job":  true,
-                "address": map[string]interface{}{
+                "address": gin.H{}{
                     "street":   "124 Oxford Street",
                     "city":     "Somewhere",
                     "zip_code": 32784,
