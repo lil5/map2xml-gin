@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"reflect"
+	"sort"
 
 	"github.com/gin-gonic/gin"
 )
@@ -117,7 +118,15 @@ func handleChildren(e *xml.Encoder, fieldName string, v interface{}, cdata bool)
 		return e.Encode(xmlMapEntry{XMLName: xml.Name{Local: fieldName}, Value: ""})
 	} else if reflect.TypeOf(v).Kind() == reflect.Map {
 		e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}})
-		for key, val := range v.(gin.H) {
+		// sort by keys
+		value := v.(gin.H)
+		keys := make([]string, 0, len(value))
+		for k := range value {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, key := range keys {
+			val := value[key]
 			if key == "xml_child_name" {
 				continue
 			}
