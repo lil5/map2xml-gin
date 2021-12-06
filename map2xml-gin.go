@@ -68,7 +68,7 @@ func (smap *StructMap) Print() *StructMap {
 		indent = map[string]int{"indent_spaces": len(*&smap.Indent.Indent), "prefix_spaces": len(*&smap.Indent.Prefix)}
 	}
 	if root = smap.Root; root != nil {
-		root = map[string]interface{}{"name": *&smap.Root.Name.Local, "attributes": smap.Root.Attributes}
+		root = gin.H{"name": *&smap.Root.Name.Local, "attributes": smap.Root.Attributes}
 	}
 	b, _ := json.MarshalIndent(gin.H{"root": root, "cdata": smap.CData, "indent": indent}, " ", "  ")
 	fmt.Println(string(b))
